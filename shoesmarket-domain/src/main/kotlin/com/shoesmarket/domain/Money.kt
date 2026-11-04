@@ -4,7 +4,9 @@ package com.shoesmarket.domain
  * 금액. 원 단위 [Long]으로 저장한다. BigDecimal/Double 사용 금지.
  */
 @JvmInline
-value class Money(val amount: Long) {
+value class Money(
+    val amount: Long,
+) {
     init {
         require(amount >= 0) { "금액은 0 이상이어야 합니다." }
     }

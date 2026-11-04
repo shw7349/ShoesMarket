@@ -13,6 +13,8 @@ dependencyResolutionManagement {
     }
 }
 
-// Phase 1: 순수 Kotlin 도메인 모듈부터 TDD로 시작.
-// 이후 Phase에서 infra / queue / stock / payment / commerce / api / batch 모듈을 추가한다.
+// Phase 1: domain → infra → api 순으로 구성.
+// 이후 Phase에서 queue / stock / payment / commerce / batch 모듈을 추가한다.
 include("shoesmarket-domain")
+include("shoesmarket-infra")
+include("shoesmarket-api")
