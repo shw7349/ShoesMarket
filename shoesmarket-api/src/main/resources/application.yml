@@ -30,7 +30,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mysql://localhost:3306/shoesmarket?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/shoesmarket?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: shoesmarket
     password: shoesmarket
     driver-class-name: com.mysql.cj.jdbc.Driver
