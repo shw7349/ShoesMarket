@@ -1,6 +1,8 @@
 package com.shoesmarket.api.common
 
+import com.shoesmarket.api.incident.IncidentReporter
 import com.shoesmarket.domain.InvalidStatusTransitionException
+import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -8,7 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
-class GlobalExceptionHandler {
+class GlobalExceptionHandler(
+    private val incidentReporter: IncidentReporter,
+) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(ApiException::class)
@@ -18,8 +22,12 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidStatusTransitionException::class)
-    fun handleInvalidTransition(e: InvalidStatusTransitionException): ResponseEntity<ApiResponse<Nothing>> {
+    fun handleInvalidTransition(
+        e: InvalidStatusTransitionException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ApiResponse<Nothing>> {
         val code = ErrorCode.INVALID_STATUS_TRANSITION
+        reportIncident(e, request)
         return ResponseEntity.status(code.status).body(ApiResponse.fail(ApiError(code.name, e.message ?: code.message)))
     }
 
@@ -38,9 +46,26 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleUnexpected(e: Exception): ResponseEntity<ApiResponse<Nothing>> {
+    fun handleUnexpected(
+        e: Exception,
+        request: HttpServletRequest,
+    ): ResponseEntity<ApiResponse<Nothing>> {
         log.error("예상치 못한 오류", e)
+        reportIncident(e, request)
         val code = ErrorCode.INTERNAL_ERROR
         return ResponseEntity.status(code.status).body(ApiResponse.fail(ApiError(code.name, code.message)))
+    }
+
+    /** 장애를 기록한다. 기록 자체가 실패해도 원래 응답에는 영향을 주지 않는다. */
+    private fun reportIncident(
+        e: Throwable,
+        request: HttpServletRequest,
+    ) {
+        runCatching {
+            incidentReporter.report(
+                source = "${request.method} ${request.requestURI}",
+                throwable = e,
+            )
+        }.onFailure { log.warn("장애 기록 실패(무시): {}", it.message) }
     }
 }

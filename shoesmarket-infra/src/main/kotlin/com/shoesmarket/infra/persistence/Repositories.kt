@@ -38,3 +38,5 @@ interface OrderRepository : JpaRepository<OrderEntity, Long> {
 interface PaymentRepository : JpaRepository<PaymentEntity, Long> {
     fun findByIdempotencyKey(idempotencyKey: String): PaymentEntity?
 }
+
+interface IncidentRepository : JpaRepository<IncidentEntity, Long>

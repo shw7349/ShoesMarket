@@ -23,6 +23,10 @@ shoesmarket:
     ttl-seconds: 300
   stock:
     strategy: LUA
+  notion:
+    enabled: ${NOTION_ENABLED:false}
+    token: ${NOTION_TOKEN:}
+    parent-page-id: ${NOTION_INCIDENT_PAGE_ID:}
 
 ---
 spring:

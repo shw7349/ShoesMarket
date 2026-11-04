@@ -1,5 +1,6 @@
 package com.shoesmarket.api.common
 
+import com.shoesmarket.api.incident.NotionProperties
 import com.shoesmarket.stock.ReservationProperties
 import com.shoesmarket.stock.StockProperties
 import org.springframework.boot.autoconfigure.domain.EntityScan
@@ -16,7 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @Configuration
 @EnableJpaAuditing
 @EnableScheduling
-@EnableConfigurationProperties(StockProperties::class, ReservationProperties::class)
+@EnableConfigurationProperties(StockProperties::class, ReservationProperties::class, NotionProperties::class)
 @EntityScan(basePackages = ["com.shoesmarket.infra.persistence"])
 @EnableJpaRepositories(basePackages = ["com.shoesmarket.infra.persistence"])
 class PersistenceConfig
