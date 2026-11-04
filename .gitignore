@@ -41,3 +41,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Claude Code (작업물 커밋/푸쉬 제외) ###
+.claude/
+
+### Env / Secrets ###
+.env
+*.env
