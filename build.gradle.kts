@@ -19,6 +19,11 @@ subprojects {
         jvmToolchain(21)
     }
 
+    // ktlint 도구 버전을 Kotlin 2.2 호환(1.6.0)으로 고정
+    extensions.configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set(rootProject.libs.versions.ktlintTool.get())
+    }
+
     tasks.withType<Test> {
         useJUnitPlatform()
     }
