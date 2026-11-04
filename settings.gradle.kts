@@ -17,4 +17,5 @@ dependencyResolutionManagement {
 // 이후 Phase에서 queue / stock / payment / commerce / batch 모듈을 추가한다.
 include("shoesmarket-domain")
 include("shoesmarket-infra")
+include("shoesmarket-stock")
 include("shoesmarket-api")

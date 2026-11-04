@@ -17,6 +17,7 @@ dependencies {
     api(project(":shoesmarket-domain"))
 
     api("org.springframework.boot:spring-boot-starter-data-jpa")
+    api("org.springframework.boot:spring-boot-starter-data-redis")
     implementation(libs.kotlin.reflect)
     implementation(libs.flyway.core)
     runtimeOnly(libs.flyway.mysql)

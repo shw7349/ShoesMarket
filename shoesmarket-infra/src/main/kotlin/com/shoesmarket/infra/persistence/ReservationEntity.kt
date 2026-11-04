@@ -10,10 +10,16 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import java.time.Instant
 
 @Entity
-@Table(name = "reservation")
+@Table(
+    name = "reservation",
+    uniqueConstraints = [
+        UniqueConstraint(name = "uk_reservation_drop_user", columnNames = ["drop_id", "user_id"]),
+    ],
+)
 class ReservationEntity(
     dropId: Long,
     userId: Long,
