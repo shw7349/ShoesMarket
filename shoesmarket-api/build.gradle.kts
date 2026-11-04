@@ -10,6 +10,7 @@ extra["kotlin.version"] = libs.versions.kotlin.get()
 dependencies {
     implementation(project(":shoesmarket-domain"))
     implementation(project(":shoesmarket-infra"))
+    implementation(project(":shoesmarket-stock"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
