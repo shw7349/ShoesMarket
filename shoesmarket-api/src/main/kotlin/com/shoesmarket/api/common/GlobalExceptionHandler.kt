@@ -45,9 +45,10 @@ class GlobalExceptionHandler(
         return ResponseEntity.status(code.status).body(ApiResponse.fail(ApiError(code.name, e.message ?: code.message)))
     }
 
-    @ExceptionHandler(Exception::class)
+    // checked / unchecked / 네트워크 I/O 오류를 모두 포괄하도록 Throwable까지 받는다.
+    @ExceptionHandler(Throwable::class)
     fun handleUnexpected(
-        e: Exception,
+        e: Throwable,
         request: HttpServletRequest,
     ): ResponseEntity<ApiResponse<Nothing>> {
         log.error("예상치 못한 오류", e)

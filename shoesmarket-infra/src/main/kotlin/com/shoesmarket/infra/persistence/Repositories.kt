@@ -8,6 +8,8 @@ import java.time.Instant
 interface ProductRepository : JpaRepository<ProductEntity, Long>
 
 interface DropEventRepository : JpaRepository<DropEventEntity, Long> {
+    fun findByStatus(status: DropStatus): List<DropEventEntity>
+
     fun findByStatusAndOpenAtLessThanEqual(
         status: DropStatus,
         openAt: Instant,

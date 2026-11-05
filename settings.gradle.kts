@@ -18,4 +18,5 @@ dependencyResolutionManagement {
 include("shoesmarket-domain")
 include("shoesmarket-infra")
 include("shoesmarket-stock")
+include("shoesmarket-queue")
 include("shoesmarket-api")

@@ -6,6 +6,8 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.redis.RedisConnectionFailureException
 import org.springframework.data.redis.RedisSystemException
 import org.springframework.stereotype.Component
+import org.springframework.web.client.ResourceAccessException
+import java.io.IOException
 
 data class IncidentAnalysis(
     val category: IncidentCategory,
@@ -18,8 +20,16 @@ data class IncidentAnalysis(
  */
 @Component
 class IncidentAnalyzer {
-    fun analyze(throwable: Throwable): IncidentAnalysis =
-        when (throwable) {
+    fun analyze(throwable: Throwable): IncidentAnalysis {
+        // 네트워크/외부 I/O 오류는 다른 예외에 감싸여 전파되는 경우가 많아 cause 체인까지 확인한다.
+        if (isNetworkError(throwable)) {
+            return IncidentAnalysis(
+                category = IncidentCategory.NETWORK,
+                probableCause = "네트워크/외부 연동 I/O 실패(연결 거부·타임아웃·호스트 미해결 등). PG 등 외부 호출이 영향받는다.",
+                suggestedAction = "대상 서비스 상태와 타임아웃/재시도 설정을 확인하고, 결제 경로는 대사 배치로 복구 가능한지 점검한다.",
+            )
+        }
+        return when (throwable) {
             is DataIntegrityViolationException ->
                 IncidentAnalysis(
                     category = IncidentCategory.DATA_INTEGRITY,
@@ -55,4 +65,17 @@ class IncidentAnalyzer {
                     suggestedAction = "스택트레이스와 컨텍스트(dropId/userId)를 확인하고 분석 규칙에 유형을 추가한다.",
                 )
         }
+    }
+
+    private fun isNetworkError(throwable: Throwable): Boolean {
+        var cause: Throwable? = throwable
+        val seen = mutableSetOf<Throwable>()
+        while (cause != null && seen.add(cause)) {
+            if (cause is IOException || cause is ResourceAccessException) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
 }
