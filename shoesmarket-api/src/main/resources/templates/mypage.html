@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('마이페이지 · ShoesMarket')}"></head>
+<body>
+<nav th:replace="~{fragments :: header}"></nav>
+
+<main class="container">
+    <section class="hero">
+        <h1 th:text="${loginMember.displayName} + ' 님의 마이페이지'">마이페이지</h1>
+        <p>내 선점과 주문 현황입니다.</p>
+    </section>
+
+    <h2 class="section-title">내 주문</h2>
+    <div class="list">
+        <div class="row" th:each="o : ${orders}">
+            <div>
+                <div style="font-weight:700">주문 #<span th:text="${o.id}">1</span></div>
+                <div class="muted" style="font-size:0.88rem">드롭 #<span th:text="${o.dropId}">1</span>
+                    · ₩<span th:text="${#numbers.formatInteger(o.amount, 0, 'COMMA')}">0</span></div>
+            </div>
+            <span class="badge" th:text="${o.status}">PAID</span>
+        </div>
+        <div th:if="${orders.isEmpty()}" class="empty">아직 주문이 없습니다.</div>
+    </div>
+
+    <h2 class="section-title">내 선점</h2>
+    <div class="list">
+        <div class="row" th:each="r : ${reservations}">
+            <div>
+                <div style="font-weight:700">선점 #<span th:text="${r.id}">1</span></div>
+                <div class="muted" style="font-size:0.88rem">드롭 #<span th:text="${r.dropId}">1</span>
+                    · 만료 <span th:text="${#temporals.format(r.expiresAt, 'MM-dd HH:mm')}">-</span></div>
+            </div>
+            <span class="badge" th:text="${r.status}">RESERVED</span>
+        </div>
+        <div th:if="${reservations.isEmpty()}" class="empty">아직 선점 내역이 없습니다.</div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<div th:replace="~{fragments :: toast}"></div>
+</body>
+</html>

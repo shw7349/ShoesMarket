@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('ShoesMarket · 한정판 드롭')}"></head>
+<body>
+<nav th:replace="~{fragments :: header}"></nav>
+
+<main class="container">
+    <section class="hero">
+        <h1>한정판 스니커즈, 선착순 드롭</h1>
+        <p>정해진 시각에 열립니다. 대기열에 들어가 차례가 오면 선점하세요.</p>
+    </section>
+
+    <section class="grid">
+        <a class="card" th:each="p : ${products}" th:href="@{/products/{id}(id=${p.id})}">
+            <div class="card-thumb">👟</div>
+            <div class="card-body">
+                <div class="brand-tag" th:text="${p.brand}">BRAND</div>
+                <h3 th:text="${p.name}">상품명</h3>
+                <div class="price" th:text="'₩' + ${#numbers.formatInteger(p.price, 0, 'COMMA')}">₩0</div>
+            </div>
+        </a>
+        <div th:if="${products.isEmpty()}" class="empty">아직 등록된 상품이 없습니다.</div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<div th:replace="~{fragments :: toast}"></div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('상품 상세 · ShoesMarket')}"></head>
+<body>
+<nav th:replace="~{fragments :: header}"></nav>
+
+<main class="container">
+    <section class="detail">
+        <div class="visual">👟</div>
+        <div>
+            <div class="brand-tag" th:text="${product.brand}">BRAND</div>
+            <h1 th:text="${product.name}">상품명</h1>
+            <div class="price" style="font-size:1.4rem" th:text="'₩' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}">₩0</div>
+            <p class="muted" style="margin-top:16px">한정 수량으로 진행되는 드롭 이벤트에서만 구매할 수 있습니다.</p>
+        </div>
+    </section>
+
+    <h2 class="section-title">드롭 일정</h2>
+    <div class="list">
+        <a class="row" th:each="d : ${drops}" th:href="@{/drops/{id}(id=${d.id})}">
+            <div>
+                <div style="font-weight:700">드롭 #<span th:text="${d.id}">1</span></div>
+                <div class="muted" style="font-size:0.88rem">
+                    오픈 <span th:text="${#temporals.format(d.openAt, 'yyyy-MM-dd HH:mm')}">-</span>
+                    · 총 <span th:text="${d.totalStock}">0</span>개 · 1인 <span th:text="${d.perUserLimit}">1</span>개
+                </div>
+            </div>
+            <span class="badge" th:classappend="${#strings.toLowerCase(d.status)}" th:text="${d.status}">OPEN</span>
+        </a>
+        <div th:if="${drops.isEmpty()}" class="empty">예정된 드롭이 없습니다.</div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<div th:replace="~{fragments :: toast}"></div>
+</body>
+</html>

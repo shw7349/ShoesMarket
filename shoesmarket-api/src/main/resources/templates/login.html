@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('로그인 · ShoesMarket')}"></head>
+<body>
+<nav th:replace="~{fragments :: header}"></nav>
+
+<main class="container">
+    <div class="form-card">
+        <h1>로그인</h1>
+        <p class="error" th:if="${error}" th:text="${error}">오류</p>
+        <form method="post" action="/login">
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" name="email" th:value="${email}" required autofocus/>
+            </div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="password" required/>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">로그인</button>
+        </form>
+        <div class="center-link">계정이 없으신가요? <a href="/signup">회원가입</a></div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<div th:replace="~{fragments :: toast}"></div>
+</body>
+</html>

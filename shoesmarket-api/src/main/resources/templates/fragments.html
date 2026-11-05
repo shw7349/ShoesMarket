@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/css/app.css"/>
+    <title th:text="${title}">ShoesMarket</title>
+</head>
+<body>
+<nav class="nav" th:fragment="header">
+    <div class="container nav-inner">
+        <a class="brand" href="/">👟 ShoesMarket</a>
+        <div class="nav-links">
+            <a href="/">상품</a>
+            <span th:if="${loginMember}">
+                <a href="/mypage">마이페이지</a>
+                <span class="muted" th:text="${loginMember.displayName} + ' 님'">회원 님</span>
+                <form method="post" action="/logout" style="display:inline">
+                    <button class="btn btn-ghost" type="submit">로그아웃</button>
+                </form>
+            </span>
+            <span th:unless="${loginMember}">
+                <a href="/login">로그인</a>
+                <a class="btn btn-primary" href="/signup">회원가입</a>
+            </span>
+        </div>
+    </div>
+</nav>
+
+<div th:fragment="toast" th:if="${toast}" class="toast" th:text="${toast}" id="toast">알림</div>
+
+<footer th:fragment="footer">
+    <div class="container" style="padding:40px 20px; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--border);">
+        선착순 한정판 스니커즈 드롭 데모 · ShoesMarket
+    </div>
+    <script>
+        const t = document.getElementById('toast');
+        if (t) setTimeout(() => t.remove(), 2600);
+    </script>
+</footer>
+</body>
+</html>

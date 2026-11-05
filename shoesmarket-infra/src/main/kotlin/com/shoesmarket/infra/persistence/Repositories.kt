@@ -16,6 +16,8 @@ interface ProductRepository : JpaRepository<ProductEntity, Long>
 interface DropEventRepository : JpaRepository<DropEventEntity, Long> {
     fun findByStatus(status: DropStatus): List<DropEventEntity>
 
+    fun findByProductId(productId: Long): List<DropEventEntity>
+
     fun findByStatusAndOpenAtLessThanEqual(
         status: DropStatus,
         openAt: Instant,
@@ -37,6 +39,8 @@ interface ReservationRepository : JpaRepository<ReservationEntity, Long> {
         status: ReservationStatus,
         expiresAt: Instant,
     ): List<ReservationEntity>
+
+    fun findByUserIdOrderByIdDesc(userId: Long): List<ReservationEntity>
 
     fun countByDropIdAndStatus(
         dropId: Long,
@@ -66,6 +70,14 @@ interface ReservationRepository : JpaRepository<ReservationEntity, Long> {
 
 interface OrderRepository : JpaRepository<OrderEntity, Long> {
     fun findByReservationId(reservationId: Long): OrderEntity?
+
+    fun findByUserIdOrderByIdDesc(userId: Long): List<OrderEntity>
+}
+
+interface MemberRepository : JpaRepository<MemberEntity, Long> {
+    fun findByEmail(email: String): MemberEntity?
+
+    fun existsByEmail(email: String): Boolean
 }
 
 interface PaymentRepository : JpaRepository<PaymentEntity, Long> {
