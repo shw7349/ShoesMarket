@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: shoesmarket-api
+  profiles:
+    active: local
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+shoesmarket:
+  queue:
+    admit-per-second: 100
+    token-ttl-seconds: 300
+  reservation:
+    ttl-seconds: 300
+  stock:
+    strategy: LUA
+  notion:
+    enabled: ${NOTION_ENABLED:false}
+    token: ${NOTION_TOKEN:}
+    parent-page-id: ${NOTION_INCIDENT_PAGE_ID:}
+  payment:
+    toss:
+      secret-key: ${TOSS_SECRET_KEY:}
+      base-url: https://api.tosspayments.com
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/shoesmarket?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: shoesmarket
+    password: shoesmarket
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
