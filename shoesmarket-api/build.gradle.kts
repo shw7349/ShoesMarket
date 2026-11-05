@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":shoesmarket-infra"))
     implementation(project(":shoesmarket-stock"))
     implementation(project(":shoesmarket-queue"))
+    implementation(project(":shoesmarket-payment"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")

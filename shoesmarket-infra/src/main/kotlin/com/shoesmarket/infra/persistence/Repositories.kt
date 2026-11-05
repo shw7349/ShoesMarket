@@ -3,6 +3,9 @@ package com.shoesmarket.infra.persistence
 import com.shoesmarket.domain.DropStatus
 import com.shoesmarket.domain.ReservationStatus
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import java.time.Instant
 
 interface ProductRepository : JpaRepository<ProductEntity, Long>
@@ -31,6 +34,26 @@ interface ReservationRepository : JpaRepository<ReservationEntity, Long> {
         status: ReservationStatus,
         expiresAt: Instant,
     ): List<ReservationEntity>
+
+    /** RESERVED일 때만 CONFIRMED로 전이. 영향 행 수를 반환(0이면 만료 등과 경합). */
+    @Modifying(clearAutomatically = true)
+    @Query(
+        "update ReservationEntity r set r.status = com.shoesmarket.domain.ReservationStatus.CONFIRMED " +
+            "where r.id = :id and r.status = com.shoesmarket.domain.ReservationStatus.RESERVED",
+    )
+    fun confirmIfReserved(
+        @Param("id") id: Long,
+    ): Int
+
+    /** RESERVED일 때만 EXPIRED로 전이. 영향 행 1일 때만 재고를 반환해야 한다. */
+    @Modifying(clearAutomatically = true)
+    @Query(
+        "update ReservationEntity r set r.status = com.shoesmarket.domain.ReservationStatus.EXPIRED " +
+            "where r.id = :id and r.status = com.shoesmarket.domain.ReservationStatus.RESERVED",
+    )
+    fun expireIfReserved(
+        @Param("id") id: Long,
+    ): Int
 }
 
 interface OrderRepository : JpaRepository<OrderEntity, Long> {

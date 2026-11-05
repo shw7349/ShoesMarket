@@ -27,6 +27,10 @@ shoesmarket:
     enabled: ${NOTION_ENABLED:false}
     token: ${NOTION_TOKEN:}
     parent-page-id: ${NOTION_INCIDENT_PAGE_ID:}
+  payment:
+    toss:
+      secret-key: ${TOSS_SECRET_KEY:}
+      base-url: https://api.tosspayments.com
 
 ---
 spring:
