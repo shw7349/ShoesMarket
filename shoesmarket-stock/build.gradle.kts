@@ -18,6 +18,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation(libs.kotlin.reflect)
+    implementation(libs.redisson.spring)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.kotest.runner.junit5)

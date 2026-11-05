@@ -3,7 +3,9 @@ package com.shoesmarket.infra.persistence
 import com.shoesmarket.domain.DropStatus
 import com.shoesmarket.domain.PaymentStatus
 import com.shoesmarket.domain.ReservationStatus
+import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -78,3 +80,11 @@ interface PaymentRepository : JpaRepository<PaymentEntity, Long> {
 interface IncidentRepository : JpaRepository<IncidentEntity, Long>
 
 interface ConsistencyReportRepository : JpaRepository<ConsistencyReportEntity, Long>
+
+interface DropStockRepository : JpaRepository<DropStockEntity, Long> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select s from DropStockEntity s where s.dropId = :dropId")
+    fun findByDropIdForUpdate(
+        @Param("dropId") dropId: Long,
+    ): DropStockEntity?
+}

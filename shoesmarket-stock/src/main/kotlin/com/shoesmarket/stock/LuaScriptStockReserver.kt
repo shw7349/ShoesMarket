@@ -8,6 +8,7 @@ import com.shoesmarket.infra.persistence.ReservationEntity
 import com.shoesmarket.infra.persistence.ReservationRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
@@ -15,10 +16,11 @@ import org.springframework.stereotype.Component
 import java.time.Clock
 
 /**
- * Redis Lua 스크립트로 재고를 원자적으로 선점한다 (명세 5.3, 7.1).
+ * Redis Lua 스크립트로 재고를 원자적으로 선점한다 (명세 5.3, 7.1). 기본 전략.
  * Lua가 "토큰 확인 + 1인 제한 + 재고 차감"을 한 번에 처리해 경합 비용을 줄인다.
  */
 @Component
+@ConditionalOnProperty(name = ["shoesmarket.stock.strategy"], havingValue = "LUA", matchIfMissing = true)
 class LuaScriptStockReserver(
     private val redisTemplate: StringRedisTemplate,
     @Qualifier("reserveStockScript") private val reserveScript: RedisScript<Long>,
