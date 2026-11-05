@@ -14,6 +14,9 @@ interface TossPaymentClient {
     /** 결제 조회(대사 배치에서 사용). */
     fun get(paymentKey: String): TossApproval
 
+    /** PG orderId로 결제 조회. 미결제(없음)면 null. 대사 배치에서 멈춘 READY 결제를 검증할 때 쓴다. */
+    fun getByOrderId(orderId: String): TossApproval?
+
     /** 결제 취소(승인 후 경합/환불). */
     fun cancel(
         paymentKey: String,

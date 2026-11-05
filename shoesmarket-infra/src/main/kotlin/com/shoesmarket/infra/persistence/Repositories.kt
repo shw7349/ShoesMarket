@@ -1,6 +1,7 @@
 package com.shoesmarket.infra.persistence
 
 import com.shoesmarket.domain.DropStatus
+import com.shoesmarket.domain.PaymentStatus
 import com.shoesmarket.domain.ReservationStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -35,6 +36,11 @@ interface ReservationRepository : JpaRepository<ReservationEntity, Long> {
         expiresAt: Instant,
     ): List<ReservationEntity>
 
+    fun countByDropIdAndStatus(
+        dropId: Long,
+        status: ReservationStatus,
+    ): Long
+
     /** RESERVED일 때만 CONFIRMED로 전이. 영향 행 수를 반환(0이면 만료 등과 경합). */
     @Modifying(clearAutomatically = true)
     @Query(
@@ -62,6 +68,13 @@ interface OrderRepository : JpaRepository<OrderEntity, Long> {
 
 interface PaymentRepository : JpaRepository<PaymentEntity, Long> {
     fun findByIdempotencyKey(idempotencyKey: String): PaymentEntity?
+
+    fun findByStatusAndCreatedAtBefore(
+        status: PaymentStatus,
+        createdAt: Instant,
+    ): List<PaymentEntity>
 }
 
 interface IncidentRepository : JpaRepository<IncidentEntity, Long>
+
+interface ConsistencyReportRepository : JpaRepository<ConsistencyReportEntity, Long>

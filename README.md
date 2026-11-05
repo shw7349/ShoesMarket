@@ -95,6 +95,26 @@ sequenceDiagram
 
 재고 동시성 테스트는 로컬 `redis-server`를 띄워 실제 Lua를 실행하고, 선점 DB는 H2를 씁니다. JPA 매핑은 `@DataJpaTest`(H2)로, 서비스 로직은 MockK로 검증합니다.
 
+## 배치와 정합성 (Phase 5)
+
+`shoesmarket-batch`는 별도 실행 애플리케이션으로, 결제 대사와 재고 정합성을 담당한다.
+
+결제 대사(`PaymentReconciliationService`)는 `READY`로 일정 시간(기본 5분) 멈춘 결제를 PG(토스)에 다시 조회한다. 서버가 PG 승인 직후 DB 반영 전에 죽은 상황을 복구하기 위해서다. PG가 승인(`DONE`)이면 조건부 UPDATE로 선점을 확정하고 주문을 만들어 맞추고, 확정이 불가능하면(이미 만료) PG를 취소한다. PG 미승인 건은 `FAILED`로 닫는다.
+
+재고 정합성(`StockConsistencyService`)은 드롭 종료 후 `total_stock == CONFIRMED + RESERVED + Redis 남은 재고`를 대조해 `consistency_report` 테이블에 기록한다.
+
+### Redis 재시작 시 재고 복구 절차
+
+Redis가 재시작되면 `drop:{id}:stock`과 `buyers`가 사라질 수 있다. DB가 최종 진실의 원천이므로 다음 순서로 복구한다.
+
+1. 드롭을 일시적으로 선점 불가로 둔다(스케줄러가 재초기화하지 않도록 상태 확인).
+2. DB에서 해당 드롭의 유효 선점 수를 센다: `CONFIRMED + RESERVED`.
+3. 남은 재고를 계산한다: `remaining = total_stock - (CONFIRMED + RESERVED)`.
+4. Redis를 복구한다: `SET drop:{id}:stock {remaining}`, `buyers`는 DB의 해당 선점 `user_id`들로 다시 채운다(`SADD`).
+5. `StockConsistencyService.check(dropId)`로 대조해 `consistent=true`인지 확인한다.
+
+이 절차 덕분에 Redis를 잃어도 초과판매 없이 재고를 되돌릴 수 있다.
+
 ## 실행 방법
 
 ```bash

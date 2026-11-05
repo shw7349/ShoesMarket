@@ -35,6 +35,7 @@ class LuaScriptStockReserverIntegrationTest
         private val redisTemplate: StringRedisTemplate,
         private val reservationRepository: ReservationRepository,
         private val stockInitializer: StockRedisInitializer,
+        private val stockReleaser: StockReleaser,
         private val stockProperties: StockProperties,
     ) {
         companion object {
@@ -167,5 +168,19 @@ class LuaScriptStockReserverIntegrationTest
             val result = reserver.reserve(DropId(999), UserId(1))
 
             assertThat(result).isEqualTo(ReserveResult.DropNotOpen)
+        }
+
+        @Test
+        fun `재고 반환을 2번 호출해도 재고는 한 번만 증가한다`() {
+            val dropId = DropId(7)
+            stockInitializer.initialize(dropId, 100)
+            reserver.reserve(dropId, UserId(1)) // 재고 99, buyers={1}
+
+            val first = stockReleaser.release(dropId, UserId(1))
+            val second = stockReleaser.release(dropId, UserId(1))
+
+            assertThat(first).isEqualTo(100L)
+            assertThat(second).isEqualTo(-1L)
+            assertThat(redisTemplate.opsForValue().get(StockKeys.stock(dropId))).isEqualTo("100")
         }
     }

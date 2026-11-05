@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: shoesmarket-batch
+  profiles:
+    active: local
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+shoesmarket:
+  batch:
+    reconcile-interval-ms: 600000
+  payment:
+    toss:
+      secret-key: ${TOSS_SECRET_KEY:}
+      base-url: https://api.tosspayments.com
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/shoesmarket?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: shoesmarket
+    password: shoesmarket
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  flyway:
+    enabled: true

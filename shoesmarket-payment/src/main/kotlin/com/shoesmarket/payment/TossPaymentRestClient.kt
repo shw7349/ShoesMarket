@@ -57,6 +57,26 @@ class TossPaymentRestClient(
             throw TossPaymentException("토스 결제 조회 실패: ${e.message}", e)
         }
 
+    override fun getByOrderId(orderId: String): TossApproval? =
+        try {
+            val response =
+                restClient
+                    .get()
+                    .uri("/v1/payments/orders/{orderId}", orderId)
+                    .retrieve()
+                    .body(Map::class.java)
+            toApproval(
+                response,
+                response?.get("paymentKey") as? String ?: "",
+                orderId,
+                (response?.get("totalAmount") as? Number)?.toLong() ?: 0,
+            )
+        } catch (e: org.springframework.web.client.HttpClientErrorException.NotFound) {
+            null
+        } catch (e: Exception) {
+            throw TossPaymentException("토스 주문 조회 실패: ${e.message}", e)
+        }
+
     override fun cancel(
         paymentKey: String,
         reason: String,
