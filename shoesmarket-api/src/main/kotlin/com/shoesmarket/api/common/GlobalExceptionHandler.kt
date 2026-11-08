@@ -1,6 +1,9 @@
 package com.shoesmarket.api.common
 
 import com.shoesmarket.api.incident.IncidentReporter
+import com.shoesmarket.commerce.NotPurchasedException
+import com.shoesmarket.commerce.ReviewForbiddenException
+import com.shoesmarket.commerce.ReviewNotFoundException
 import com.shoesmarket.domain.InvalidStatusTransitionException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
@@ -39,6 +42,18 @@ class GlobalExceptionHandler(
         return ResponseEntity.status(code.status).body(ApiResponse.fail(ApiError(code.name, message)))
     }
 
+    @ExceptionHandler(NotPurchasedException::class)
+    fun handleNotPurchased(e: NotPurchasedException): ResponseEntity<ApiResponse<Nothing>> =
+        errorResponse(ErrorCode.REVIEW_NOT_PURCHASED, e.message)
+
+    @ExceptionHandler(ReviewForbiddenException::class)
+    fun handleReviewForbidden(e: ReviewForbiddenException): ResponseEntity<ApiResponse<Nothing>> =
+        errorResponse(ErrorCode.REVIEW_FORBIDDEN, e.message)
+
+    @ExceptionHandler(ReviewNotFoundException::class)
+    fun handleReviewNotFound(e: ReviewNotFoundException): ResponseEntity<ApiResponse<Nothing>> =
+        errorResponse(ErrorCode.REVIEW_NOT_FOUND, e.message)
+
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgument(e: IllegalArgumentException): ResponseEntity<ApiResponse<Nothing>> {
         val code = ErrorCode.INVALID_REQUEST
@@ -56,6 +71,12 @@ class GlobalExceptionHandler(
         val code = ErrorCode.INTERNAL_ERROR
         return ResponseEntity.status(code.status).body(ApiResponse.fail(ApiError(code.name, code.message)))
     }
+
+    private fun errorResponse(
+        code: ErrorCode,
+        message: String?,
+    ): ResponseEntity<ApiResponse<Nothing>> =
+        ResponseEntity.status(code.status).body(ApiResponse.fail(ApiError(code.name, message ?: code.message)))
 
     /** 장애를 기록한다. 기록 자체가 실패해도 원래 응답에는 영향을 주지 않는다. */
     private fun reportIncident(

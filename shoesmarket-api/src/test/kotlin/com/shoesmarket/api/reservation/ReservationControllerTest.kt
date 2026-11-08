@@ -3,6 +3,7 @@ package com.shoesmarket.api.reservation
 import com.ninjasquad.springmockk.MockkBean
 import com.shoesmarket.api.common.GlobalExceptionHandler
 import com.shoesmarket.api.incident.IncidentReporter
+import com.shoesmarket.api.media.MediaProperties
 import com.shoesmarket.api.web.WebSession
 import com.shoesmarket.domain.ReservationId
 import com.shoesmarket.domain.ReserveResult
@@ -31,6 +32,9 @@ class ReservationControllerTest
 
         @MockkBean(relaxed = true)
         private lateinit var webSession: WebSession
+
+        @MockkBean(relaxed = true)
+        private lateinit var mediaProperties: MediaProperties
 
         @Test
         fun `선점 성공하면 201과 reservationId를 반환한다`() {

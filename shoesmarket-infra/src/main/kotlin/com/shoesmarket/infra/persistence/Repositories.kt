@@ -72,6 +72,31 @@ interface OrderRepository : JpaRepository<OrderEntity, Long> {
     fun findByReservationId(reservationId: Long): OrderEntity?
 
     fun findByUserIdOrderByIdDesc(userId: Long): List<OrderEntity>
+
+    /** 해당 회원이 그 상품의 드롭에서 결제 완료한 주문이 있는지(후기 작성 자격). */
+    @Query(
+        "select count(o) > 0 from OrderEntity o, DropEventEntity d " +
+            "where o.dropId = d.id and o.userId = :userId and d.productId = :productId " +
+            "and o.status = com.shoesmarket.domain.OrderStatus.PAID",
+    )
+    fun hasPurchasedProduct(
+        @Param("userId") userId: Long,
+        @Param("productId") productId: Long,
+    ): Boolean
+}
+
+interface ReviewRepository : JpaRepository<ReviewEntity, Long> {
+    fun findByProductIdAndHiddenFalse(
+        productId: Long,
+        pageable: org.springframework.data.domain.Pageable,
+    ): org.springframework.data.domain.Page<ReviewEntity>
+
+    fun countByProductIdAndHiddenFalse(productId: Long): Long
+
+    @Query("select coalesce(avg(r.rating), 0) from ReviewEntity r where r.productId = :productId and r.hidden = false")
+    fun averageRating(
+        @Param("productId") productId: Long,
+    ): Double
 }
 
 interface MemberRepository : JpaRepository<MemberEntity, Long> {

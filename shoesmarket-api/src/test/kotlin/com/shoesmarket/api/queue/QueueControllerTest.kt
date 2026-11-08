@@ -3,6 +3,7 @@ package com.shoesmarket.api.queue
 import com.ninjasquad.springmockk.MockkBean
 import com.shoesmarket.api.common.GlobalExceptionHandler
 import com.shoesmarket.api.incident.IncidentReporter
+import com.shoesmarket.api.media.MediaProperties
 import com.shoesmarket.api.web.WebSession
 import com.shoesmarket.domain.QueueEnterResult
 import com.shoesmarket.queue.QueueService
@@ -29,6 +30,9 @@ class QueueControllerTest
 
         @MockkBean(relaxed = true)
         private lateinit var webSession: WebSession
+
+        @MockkBean(relaxed = true)
+        private lateinit var mediaProperties: MediaProperties
 
         @Test
         fun `진입하면 200과 순번을 반환한다`() {

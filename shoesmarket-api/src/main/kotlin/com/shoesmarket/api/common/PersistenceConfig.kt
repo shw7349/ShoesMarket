@@ -1,6 +1,7 @@
 package com.shoesmarket.api.common
 
 import com.shoesmarket.api.incident.NotionProperties
+import com.shoesmarket.api.media.MediaProperties
 import com.shoesmarket.payment.TossProperties
 import com.shoesmarket.queue.QueueProperties
 import com.shoesmarket.stock.ReservationProperties
@@ -25,6 +26,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     NotionProperties::class,
     QueueProperties::class,
     TossProperties::class,
+    MediaProperties::class,
 )
 @EntityScan(basePackages = ["com.shoesmarket.infra.persistence"])
 @EnableJpaRepositories(basePackages = ["com.shoesmarket.infra.persistence"])
