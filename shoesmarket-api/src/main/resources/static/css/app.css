@@ -78,10 +78,18 @@ a { color: inherit; text-decoration: none; }
 .hero h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.04em; margin: 0 0 4px; }
 .hero p { color: var(--muted); margin: 0; font-size: 0.95rem; }
 
+/* Layout with left category sidebar */
+.layout { display: grid; grid-template-columns: 172px 1fr; gap: 36px; align-items: start; padding-bottom: 80px; }
+.sidebar { position: sticky; top: 92px; }
+.sidebar-title { font-size: 0.74rem; font-weight: 800; color: var(--muted); letter-spacing: 0.04em; margin: 0 12px 10px; text-transform: uppercase; }
+.cat { display: block; padding: 9px 12px; border-radius: 8px; font-size: 0.9rem; color: var(--sub); margin-bottom: 2px; }
+.cat:hover { background: var(--thumb); }
+.cat.active { background: var(--accent); color: var(--accent-fg); font-weight: 700; }
+
 /* Product grid — KREAM style */
 .grid {
-  display: grid; column-gap: 20px; row-gap: 40px; padding: 10px 0 80px;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  display: grid; column-gap: 20px; row-gap: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
 }
 .card { background: transparent; display: flex; flex-direction: column; }
 .card-thumb {
@@ -157,4 +165,8 @@ footer .container { padding: 44px 40px; color: var(--muted); font-size: 0.82rem;
   .container { padding: 0 20px; }
   .detail { grid-template-columns: 1fr; }
   .search { display: none; }
+  .layout { grid-template-columns: 1fr; gap: 16px; }
+  .sidebar { position: static; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+  .sidebar-title { display: none; }
+  .cat { white-space: nowrap; margin: 0; }
 }

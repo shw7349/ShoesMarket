@@ -10,18 +10,27 @@
         <p>정해진 시각에 열립니다. 대기열에 들어가 차례가 오면 선점하세요.</p>
     </section>
 
-    <section class="grid">
-        <a class="card" th:each="p : ${products}" th:href="@{/products/{id}(id=${p.id})}">
-            <div class="card-thumb">👟</div>
-            <div class="card-body">
-                <div class="brand-tag" th:text="${p.brand}">BRAND</div>
-                <h3 th:text="${p.name}">상품명</h3>
-                <div class="price" th:text="'₩' + ${#numbers.formatInteger(p.price, 0, 'COMMA')}">₩0</div>
-                <span class="price-label">즉시 구매가</span>
-            </div>
-        </a>
-        <div th:if="${products.isEmpty()}" class="empty">아직 등록된 상품이 없습니다.</div>
-    </section>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-title">카테고리</div>
+            <a class="cat" href="/" th:classappend="${#strings.isEmpty(brand)} ? 'active' : ''">전체</a>
+            <a class="cat" th:each="b : ${brands}" th:href="@{/(brand=${b})}"
+               th:text="${b}" th:classappend="${brand == b} ? 'active' : ''">브랜드</a>
+        </aside>
+
+        <section class="grid">
+            <a class="card" th:each="p : ${products}" th:href="@{/products/{id}(id=${p.id})}">
+                <div class="card-thumb">👟</div>
+                <div class="card-body">
+                    <div class="brand-tag" th:text="${p.brand}">BRAND</div>
+                    <h3 th:text="${p.name}">상품명</h3>
+                    <div class="price" th:text="'₩' + ${#numbers.formatInteger(p.price, 0, 'COMMA')}">₩0</div>
+                    <span class="price-label">즉시 구매가</span>
+                </div>
+            </a>
+            <div th:if="${products.isEmpty()}" class="empty">상품이 없습니다.</div>
+        </section>
+    </div>
 </main>
 
 <footer th:replace="~{fragments :: footer}"></footer>

@@ -17,16 +17,19 @@ class HomeController(
     @GetMapping("/")
     fun home(
         @RequestParam(required = false) q: String?,
+        @RequestParam(required = false) brand: String?,
         model: Model,
     ): String {
         val products =
-            if (q.isNullOrBlank()) {
-                productRepository.findAll()
-            } else {
-                productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCase(q.trim(), q.trim())
+            when {
+                !brand.isNullOrBlank() -> productRepository.findByBrand(brand)
+                !q.isNullOrBlank() -> productRepository.findByNameContainingIgnoreCaseOrBrandContainingIgnoreCase(q.trim(), q.trim())
+                else -> productRepository.findAll()
             }
         model.addAttribute("products", products)
         model.addAttribute("q", q ?: "")
+        model.addAttribute("brand", brand ?: "")
+        model.addAttribute("brands", productRepository.findDistinctBrands())
         return "index"
     }
 

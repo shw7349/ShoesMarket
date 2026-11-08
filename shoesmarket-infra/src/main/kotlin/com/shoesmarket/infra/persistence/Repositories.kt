@@ -16,6 +16,11 @@ interface ProductRepository : JpaRepository<ProductEntity, Long> {
         name: String,
         brand: String,
     ): List<ProductEntity>
+
+    fun findByBrand(brand: String): List<ProductEntity>
+
+    @Query("select distinct p.brand from ProductEntity p order by p.brand")
+    fun findDistinctBrands(): List<String>
 }
 
 interface DropEventRepository : JpaRepository<DropEventEntity, Long> {
