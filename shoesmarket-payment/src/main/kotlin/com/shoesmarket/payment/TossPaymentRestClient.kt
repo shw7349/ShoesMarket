@@ -1,13 +1,16 @@
 package com.shoesmarket.payment
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import java.util.Base64
 
 /**
  * 토스페이먼츠 RestClient 구현. 시크릿 키는 환경변수로만 주입한다(커밋 금지).
+ * shoesmarket.payment.toss.mock=false 일 때만 사용된다(실제 PG 연동).
  */
 @Component
+@ConditionalOnProperty(name = ["shoesmarket.payment.toss.mock"], havingValue = "false")
 class TossPaymentRestClient(
     private val properties: TossProperties,
 ) : TossPaymentClient {

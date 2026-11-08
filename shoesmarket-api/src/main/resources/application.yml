@@ -29,6 +29,7 @@ shoesmarket:
     parent-page-id: ${NOTION_INCIDENT_PAGE_ID:}
   payment:
     toss:
+      mock: ${TOSS_MOCK:true}
       secret-key: ${TOSS_SECRET_KEY:}
       base-url: https://api.tosspayments.com
   media:

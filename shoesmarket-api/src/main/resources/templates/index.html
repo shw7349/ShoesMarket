@@ -17,6 +17,7 @@
                 <div class="brand-tag" th:text="${p.brand}">BRAND</div>
                 <h3 th:text="${p.name}">상품명</h3>
                 <div class="price" th:text="'₩' + ${#numbers.formatInteger(p.price, 0, 'COMMA')}">₩0</div>
+                <span class="price-label">즉시 구매가</span>
             </div>
         </a>
         <div th:if="${products.isEmpty()}" class="empty">아직 등록된 상품이 없습니다.</div>

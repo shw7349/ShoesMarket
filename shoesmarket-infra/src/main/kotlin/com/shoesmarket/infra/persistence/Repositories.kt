@@ -11,7 +11,12 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.Instant
 
-interface ProductRepository : JpaRepository<ProductEntity, Long>
+interface ProductRepository : JpaRepository<ProductEntity, Long> {
+    fun findByNameContainingIgnoreCaseOrBrandContainingIgnoreCase(
+        name: String,
+        brand: String,
+    ): List<ProductEntity>
+}
 
 interface DropEventRepository : JpaRepository<DropEventEntity, Long> {
     fun findByStatus(status: DropStatus): List<DropEventEntity>
